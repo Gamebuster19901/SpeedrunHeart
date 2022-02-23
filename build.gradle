@@ -1,0 +1,44 @@
+plugins {
+	id 'java-library'
+	id 'eclipse'
+	id 'com.github.johnrengelman.shadow' version "7.0.0"
+}
+
+repositories {
+	mavenCentral()
+}
+
+sourceCompatibility = '9'
+targetCompatibility = '9'
+
+version = 0
+group = "com.gamebuster19901"
+archivesBaseName = "heart"
+
+dependencies {
+
+}
+
+shadowJar {
+	mergeServiceFiles()
+	configurations = [project.configurations.shadow]
+	exclude 'META-INF/LICENSE'
+	exclude 'META-INF/LICENSE.txt'
+	exclude 'META-INF/LICENSsE.txt'
+	exclude 'META-INF/NOTICE'
+	exclude 'META-INF/NOTICE.txt'
+	exclude 'META-INF/DEPENDENCIES'
+	exclude 'LICENSE.txt'
+}
+
+jar {
+	manifest {
+		attributes(
+			'Main-Class': 'com.gamebuster19901.heart.main',
+			'Specification-Version': 9.0,
+			'Multi-Release': 'true'
+		)
+	}
+}
+
+build.finalizedBy shadowJar
