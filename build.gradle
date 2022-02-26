@@ -16,7 +16,7 @@ group = "com.gamebuster19901"
 archivesBaseName = "heart"
 
 dependencies {
-
+	shadow group: 'com.google.android', name: 'android', version: '4.1.1.4'
 }
 
 shadowJar {
