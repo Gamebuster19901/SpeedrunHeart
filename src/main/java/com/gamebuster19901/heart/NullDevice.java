@@ -3,7 +3,7 @@ package com.gamebuster19901.heart;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
 
-public class NullDevice extends HC06 {
+public class NullDevice extends PulseDevice {
 
 	public static final NullDevice INSTANCE;
 	static {

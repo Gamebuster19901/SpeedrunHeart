@@ -11,12 +11,12 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 
-public class HC06 extends InputStream implements SerialPortEventListener {
+public class PulseDevice extends InputStream implements SerialPortEventListener {
 
 	protected SerialPort serialPort;
 	protected ConcurrentLinkedDeque<Character> queue = new ConcurrentLinkedDeque<Character>();
 	
-	protected HC06(SerialPort serialPort) throws SerialPortException {
+	protected PulseDevice(SerialPort serialPort) throws SerialPortException {
 		this.serialPort = serialPort;
 		connect();
 	}
@@ -51,12 +51,12 @@ public class HC06 extends InputStream implements SerialPortEventListener {
 		}
 	}
 	
-	public static HC06 getHC06(String portName) throws SerialPortException {
+	public static PulseDevice getHC06(String portName) throws SerialPortException {
 		String[] ports = SerialPortList.getPortNames();
 		for(String s : ports) {
 			if(s.equals(portName)) {
 				System.out.println("Found device connected to port " + portName);
-				return new HC06(new SerialPort(s));
+				return new PulseDevice(new SerialPort(s));
 			}
 		}
 		System.out.println("Could not find device connected to port " + portName);
@@ -64,8 +64,8 @@ public class HC06 extends InputStream implements SerialPortEventListener {
 	}
 	
 	
-	public static HC06 tryGetHC06(String portName, int seconds, boolean throwException) throws DeviceNotFoundException, InterruptedException, SerialPortException {
-		HC06 hc06 = NullDevice.INSTANCE;
+	public static PulseDevice tryGetHC06(String portName, int seconds, boolean throwException) throws DeviceNotFoundException, InterruptedException, SerialPortException {
+		PulseDevice hc06 = NullDevice.INSTANCE;
 		long s = 0;
 		do {
 			hc06 = getHC06(portName);
