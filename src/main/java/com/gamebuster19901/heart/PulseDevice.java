@@ -2,7 +2,6 @@ package com.gamebuster19901.heart;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import jssc.SerialPort;
@@ -14,7 +13,7 @@ import jssc.SerialPortList;
 public class PulseDevice extends InputStream implements SerialPortEventListener {
 
 	protected SerialPort serialPort;
-	protected ConcurrentLinkedDeque<Character> queue = new ConcurrentLinkedDeque<Character>();
+	public ConcurrentLinkedDeque<Character> queue = new ConcurrentLinkedDeque<Character>();
 	
 	protected PulseDevice(SerialPort serialPort) throws SerialPortException {
 		this.serialPort = serialPort;
@@ -26,7 +25,7 @@ public class PulseDevice extends InputStream implements SerialPortEventListener 
 			throw new IllegalStateException(serialPort.getPortName() + " is already open!");
 		}
 		serialPort.openPort();
-		serialPort.setParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+		serialPort.setParams(57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 		serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
 		serialPort.addEventListener(this);
 	}
@@ -94,6 +93,7 @@ public class PulseDevice extends InputStream implements SerialPortEventListener 
 
 	@Override
 	public int read() throws IOException {
+		
 		StringBuilder ret = new StringBuilder(4);
 		
 		while(ret.toString().trim().length() == 0) {

@@ -2,7 +2,7 @@
 
 SoftwareSerial BTserial(0,1);
 
-int baud = 9600;
+long baud = 57600;
 int PulseSensorPin = 0;// Pulse Sensor PURPLE WIRE connected to ANALOG PIN 0
 int Signal;// holds the incoming raw data. Signal value can range from 0-1024
 
@@ -17,6 +17,4 @@ void loop() {
 
   Signal = analogRead(PulseSensorPin);
   BTserial.println(Signal);
-  
-  delay(10);
 }
