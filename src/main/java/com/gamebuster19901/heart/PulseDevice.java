@@ -1,8 +1,6 @@
 package com.gamebuster19901.heart;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.ArrayList;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -10,10 +8,11 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 
-public class PulseDevice extends InputStream implements SerialPortEventListener {
+public class PulseDevice implements SerialPortEventListener {
 
 	protected SerialPort serialPort;
-	public ConcurrentLinkedDeque<Character> queue = new ConcurrentLinkedDeque<Character>();
+	private StringBuilder data = new StringBuilder();
+	private ArrayList<PulseListener> listeners = new ArrayList<PulseListener>();
 	
 	protected PulseDevice(SerialPort serialPort) throws SerialPortException {
 		this.serialPort = serialPort;
@@ -40,10 +39,7 @@ public class PulseDevice extends InputStream implements SerialPortEventListener 
 	public void serialEvent(SerialPortEvent e) {
 		try {
 			if(e.getEventType() == SerialPortEvent.RXCHAR) {
-				char[] chars = serialPort.readString().toCharArray();
-				for(char c : chars) {
-					queue.add(c);
-				}
+				parse(serialPort.readString().toCharArray());
 			}
 		} catch (SerialPortException e1) {
 			e1.printStackTrace();
@@ -90,37 +86,33 @@ public class PulseDevice extends InputStream implements SerialPortEventListener 
 			//swallow
 		}
 	}
-
-	@Override
-	public int read() throws IOException {
-		
-		StringBuilder ret = new StringBuilder(4);
-		
-		while(ret.toString().trim().length() == 0) {
-			for(Character c = getChar(); c != '\n' && c != '\r'; c = getChar()) {
-				if(c == '\n' || c == '\r') {
+	
+	public void parse(char[] chars) {
+		for(char c : chars) {
+			switch (c) {
+				case '\n':
+					send();
+					data = new StringBuilder();
 					break;
-				}
-				ret.append(c);
+				case '\r':
+					break; //ignore
+				default:
+					data.append(c);
 			}
 		}
-		
-		//System.out.println("queue size: " + queue.size());
-		
-		try {
-			return Integer.parseInt(ret.toString());
-		}
-		catch(NumberFormatException e) {
-			return -1;
+	}
+
+	public void send() {
+		for(PulseListener listener : listeners) {
+			listener.onReceive(Integer.parseInt(data.toString()));
 		}
 	}
 	
-	private Character getChar() {
-		Character c = queue.pollFirst();
-		while(c == null) {
-			c = queue.pollFirst();
-		}
-		return c;
+	public boolean addListener(PulseListener listener) {
+		return listeners.add(listener);
 	}
 	
+	public static interface PulseListener {
+		public void onReceive(int data);
+	}
 }
