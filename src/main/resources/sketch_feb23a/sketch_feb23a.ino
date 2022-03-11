@@ -17,4 +17,5 @@ void loop() {
 
   Signal = analogRead(PulseSensorPin);
   BTserial.println(Signal);
+  delay(3);
 }
