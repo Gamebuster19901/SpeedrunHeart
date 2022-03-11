@@ -16,10 +16,9 @@ public class PulseDevice implements SerialPortEventListener {
 	
 	protected PulseDevice(SerialPort serialPort) throws SerialPortException {
 		this.serialPort = serialPort;
-		connect();
 	}
 	
-	protected void connect() throws SerialPortException {
+	public void connect() throws SerialPortException {
 		if(serialPort.isOpened()) {
 			throw new IllegalStateException(serialPort.getPortName() + " is already open!");
 		}
@@ -103,8 +102,13 @@ public class PulseDevice implements SerialPortEventListener {
 	}
 
 	public void send() {
-		for(PulseListener listener : listeners) {
-			listener.onReceive(Integer.parseInt(data.toString()));
+		try {
+			for(PulseListener listener : listeners) {
+				listener.onReceive(Integer.parseInt(data.toString()));
+			}
+		}
+		catch(NumberFormatException e) {
+			e.printStackTrace();
 		}
 	}
 	

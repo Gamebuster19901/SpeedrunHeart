@@ -15,8 +15,8 @@ public class NullDevice extends PulseDevice {
 	}
 	
 	@Override
-	protected void connect() {
-		//no-op
+	public void connect() {
+		new UnsupportedOperationException().printStackTrace();
 	}
 	
 	@Override
