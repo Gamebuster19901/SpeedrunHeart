@@ -52,6 +52,9 @@ public class Monitor extends ApplicationFrame implements PulseListener {
 			public void trim(Rectangle2D area) {}
 		});
 		
+		this.setSize(1000, 250);
+		this.setResizable(false);
+		
 		plot.getRenderer().setSeriesStroke(0, new BasicStroke(3));
 		plot.getRenderer().setSeriesPaint(0, Main.GBColor);
 		
