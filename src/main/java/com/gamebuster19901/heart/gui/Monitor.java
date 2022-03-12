@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
+
 import java.io.IOException;
 
 import org.jfree.chart.ChartFactory;
@@ -27,11 +28,15 @@ public class Monitor extends ApplicationFrame implements PulseListener {
 	private DynamicTimeSeriesCollection dataset;
 	private JFreeChart chart;
 	private MonitorWorker worker;
+	public final int maxDataPoints;
 	
-	public Monitor(PulseDevice pulseDevice) throws IOException, InterruptedException {
+	public Monitor(PulseDevice pulseDevice, int maxDataPoints) throws IOException, InterruptedException {
 		super("test");
+		this.setSize(1000, 250);
+		this.setResizable(false);
 		this.pulseDevice = pulseDevice;
-		dataset = new DynamicTimeSeriesCollection(1, 2000, new Second());
+		this.maxDataPoints = maxDataPoints;
+		dataset = new DynamicTimeSeriesCollection(1, maxDataPoints, new Second());
 		dataset.setTimeBase(new Second());
 		dataset.addSeries(new float[] {}, 0, "Refractive Index");
 		chart = ChartFactory.createTimeSeriesChart("", "", "", dataset, false, false, false);
@@ -39,6 +44,7 @@ public class Monitor extends ApplicationFrame implements PulseListener {
 		
 		final XYPlot plot = chart.getXYPlot();
 		plot.setBackgroundPaint(Color.BLACK);
+
 		plot.setRangeGridlinesVisible(false);
 		plot.setDomainGridlinesVisible(false);
 		plot.getDomainAxis().setAutoRange(true);
@@ -50,8 +56,7 @@ public class Monitor extends ApplicationFrame implements PulseListener {
 			public void trim(Rectangle2D area) {}
 		});
 		
-		this.setSize(1000, 250);
-		this.setResizable(false);
+
 		
 		plot.getRenderer().setSeriesStroke(0, new BasicStroke(3));
 		plot.getRenderer().setSeriesPaint(0, Main.GBColor);
