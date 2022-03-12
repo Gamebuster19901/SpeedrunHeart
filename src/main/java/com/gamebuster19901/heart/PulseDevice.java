@@ -45,7 +45,7 @@ public class PulseDevice implements SerialPortEventListener {
 		}
 	}
 	
-	public static PulseDevice getHC06(String portName) throws SerialPortException {
+	public static PulseDevice getPulseDevice(String portName) throws SerialPortException {
 		String[] ports = SerialPortList.getPortNames();
 		for(String s : ports) {
 			if(s.equals(portName)) {
@@ -58,11 +58,13 @@ public class PulseDevice implements SerialPortEventListener {
 	}
 	
 	
-	public static PulseDevice tryGetHC06(String portName, int seconds, boolean throwException) throws DeviceNotFoundException, InterruptedException, SerialPortException {
+	public static PulseDevice tryGetPulseDevice(String portName, int seconds, boolean throwException) throws DeviceNotFoundException, InterruptedException, SerialPortException {
 		PulseDevice hc06 = NullDevice.INSTANCE;
 		long s = 0;
 		do {
-			hc06 = getHC06(portName);
+			for(int i = 0; i < 5 && hc06 == NullDevice.INSTANCE; i++) {
+				hc06 = getPulseDevice(portName + i);
+			}
 			if(s > seconds) {
 				if(throwException) {
 					throw new DeviceNotFoundException(portName);

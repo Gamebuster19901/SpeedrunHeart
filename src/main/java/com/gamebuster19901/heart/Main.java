@@ -24,7 +24,7 @@ public class Main {
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	public static void main(String[] args) throws InterruptedException, SerialPortException, IOException {
-		PulseDevice pulseDevice = PulseDevice.tryGetHC06("/dev/ttyACM1", 10, true);
+		PulseDevice pulseDevice = PulseDevice.tryGetPulseDevice("/dev/ttyACM", 10, true);
 		
 		Monitor monitor = new Monitor(pulseDevice, 2000);
 		MonitorWorker worker = new MonitorWorker(monitor);
