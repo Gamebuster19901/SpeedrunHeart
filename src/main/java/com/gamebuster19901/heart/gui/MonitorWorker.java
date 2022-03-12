@@ -14,8 +14,8 @@ public final class MonitorWorker extends SwingWorker<Void, Integer> implements P
 		this.monitor = monitor;
 	}
 	
-	public void onReceive(int data) {
-		publish(data);
+	public void onReceive(int[] data) {
+		publish(data[1]);
 	}
 	
 	@Override

@@ -104,7 +104,36 @@ public class PulseDevice implements SerialPortEventListener {
 	public void send() {
 		try {
 			for(PulseListener listener : listeners) {
-				listener.onReceive(Integer.parseInt(data.toString()));
+				int startBPM = data.indexOf("[");
+				int endBPM = data.indexOf("]");
+				int startSignal = data.indexOf("{");
+				int endSignal = data.indexOf("}");
+				System.out.println(data);
+				if(startBPM == 0) {
+					if(endBPM > 0) {
+						int bpm = Integer.parseInt(data.substring(startBPM + 1, endBPM));
+						if(startSignal == endBPM + 1) {
+							if(endSignal == data.length() - 1) {
+								int signal = Integer.parseInt(data.substring(startSignal + 1, endSignal));
+								listener.onReceive(new int[] {bpm, signal});
+							}
+							else {
+								System.out.println("Malformed packet (4): " + data);
+							}
+						}
+						else {
+							System.out.println("Malformed packet (3): " + data);
+							return;
+						}
+					}
+					else {
+						System.out.println("Malformed packet (2): " + data);
+						return;
+					}
+				}
+				else {
+					System.out.println("Malformed packet (1): " + data);
+				}
 			}
 		}
 		catch(NumberFormatException e) {
@@ -117,6 +146,6 @@ public class PulseDevice implements SerialPortEventListener {
 	}
 	
 	public static interface PulseListener {
-		public void onReceive(int data);
+		public void onReceive(int[] data);
 	}
 }

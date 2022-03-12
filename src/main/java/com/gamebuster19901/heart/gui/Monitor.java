@@ -68,7 +68,7 @@ public class Monitor extends ApplicationFrame implements PulseListener {
 	}
 
 	@Override
-	public void onReceive(int data) {
+	public void onReceive(int[] data) {
 		worker.onReceive(data);
 	}
 	
