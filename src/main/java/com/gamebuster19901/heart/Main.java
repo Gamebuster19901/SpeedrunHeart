@@ -43,11 +43,6 @@ public class Main {
 			monitor.getChart().getXYPlot().addDomainMarker(0, marker, Layer.BACKGROUND);
 		});
 		timer.start();
-		
-		
-		//while(true) {
-		//	System.out.println(pulseDevice.read() + " r");
-		//}
 	}
 	
 }
