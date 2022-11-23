@@ -39,7 +39,10 @@ public class Main {
 			marker.setLabelBackgroundColor(Color.BLACK);
 			marker.setLabelPaint(Color.white);
 			marker.setLabelFont(marker.getLabelFont().deriveFont(17f));
-			marker.setLabel(formatter.format(now));
+			String timestamp = formatter.format(now);
+			if(timestamp.endsWith("0") || timestamp.endsWith("5")) {
+				marker.setLabel(formatter.format(now));
+			}
 			monitor.getChart().getXYPlot().addDomainMarker(0, marker, Layer.BACKGROUND);
 		});
 		timer.start();
