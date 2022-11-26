@@ -31,19 +31,24 @@ public class Main {
 		pulseDevice.addListener(worker);
 		worker.execute();
 		Timer timer = new Timer(1000, (e) -> {
-			LocalDateTime now = LocalDateTime.now();
-			ValueMarker marker = new ValueMarker(monitor.getChart().getXYPlot().getDomainAxis(0).getUpperBound());
-			marker.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
-			marker.setStroke(new BasicStroke(2));
-			marker.setLabelAnchor(RectangleAnchor.BOTTOM);
-			marker.setLabelBackgroundColor(Color.BLACK);
-			marker.setLabelPaint(Color.white);
-			marker.setLabelFont(marker.getLabelFont().deriveFont(17f));
-			String timestamp = formatter.format(now);
-			if(timestamp.endsWith("0") || timestamp.endsWith("5")) {
-				marker.setLabel(formatter.format(now));
+			if(pulseDevice.isValid()) {
+				LocalDateTime now = LocalDateTime.now();
+				ValueMarker marker = new ValueMarker(monitor.getChart().getXYPlot().getDomainAxis(0).getUpperBound());
+				marker.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
+				marker.setStroke(new BasicStroke(2));
+				marker.setLabelAnchor(RectangleAnchor.BOTTOM);
+				marker.setLabelBackgroundColor(Color.BLACK);
+				marker.setLabelPaint(Color.white);
+				marker.setLabelFont(marker.getLabelFont().deriveFont(17f));
+				String timestamp = formatter.format(now);
+				if(timestamp.endsWith("0") || timestamp.endsWith("5")) {
+					marker.setLabel(formatter.format(now));
+				}
+				monitor.getChart().getXYPlot().addDomainMarker(0, marker, Layer.BACKGROUND);
 			}
-			monitor.getChart().getXYPlot().addDomainMarker(0, marker, Layer.BACKGROUND);
+			else {
+				pulseDevice.reconnect();
+			}
 		});
 		timer.start();
 	}

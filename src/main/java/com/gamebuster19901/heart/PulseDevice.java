@@ -13,6 +13,7 @@ public class PulseDevice implements SerialPortEventListener {
 	protected SerialPort serialPort;
 	private StringBuilder data = new StringBuilder();
 	private ArrayList<PulseListener> listeners = new ArrayList<PulseListener>();
+	private long lastPacket = System.currentTimeMillis();
 	
 	protected PulseDevice(SerialPort serialPort) throws SerialPortException {
 		this.serialPort = serialPort;
@@ -28,9 +29,24 @@ public class PulseDevice implements SerialPortEventListener {
 		serialPort.addEventListener(this);
 	}
 	
+
+	
 	public void disconnect() throws SerialPortException {
 		if(serialPort.isOpened()) {
 			serialPort.closePort();
+		}
+	}
+	
+	public void reconnect() {
+		try {
+			disconnect();
+		} catch (SerialPortException e) {
+			e.printStackTrace();
+		}
+		try {
+			connect();
+		} catch (SerialPortException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -38,6 +54,7 @@ public class PulseDevice implements SerialPortEventListener {
 	public void serialEvent(SerialPortEvent e) {
 		try {
 			if(e.getEventType() == SerialPortEvent.RXCHAR) {
+				lastPacket = System.currentTimeMillis();
 				parse(serialPort.readString().toCharArray());
 			}
 		} catch (SerialPortException e1) {
@@ -86,6 +103,10 @@ public class PulseDevice implements SerialPortEventListener {
 		catch(SerialPortException e) {
 			//swallow
 		}
+	}
+	
+	public boolean isValid() {
+		return System.currentTimeMillis() - lastPacket < 2000;
 	}
 	
 	public void parse(char[] chars) {
